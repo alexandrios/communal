@@ -1,0 +1,26 @@
+{% load static %}
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <title>{% block title %}Главная{% endblock %} - Коммунальные платежи</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'prospect/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Коммунальные платежи</h1>
+    </header>
+    <nav>
+        <a href="{% url 'index' %}">Главная</a>
+        <a href="{% url 'counters' %}">Счётчики</a>
+        <a href="{% url 'tariffs' %}">Тарифы</a>
+    </nav>
+    <br />
+    <br />
+    <br />
+    <section>
+        {% block content %}
+        {% endblock %}
+    </section>
+</body>
+</html>

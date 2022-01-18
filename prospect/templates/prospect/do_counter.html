@@ -1,0 +1,10 @@
+{% extends "layout/basic.html" %}
+
+{% block content %}
+<h2>РАСЧЁТ</h2>
+{% for bb in result %}
+<div class="b">
+    <p>{{ bb }}</p>
+</div>
+{% endfor %}
+{% endblock %}

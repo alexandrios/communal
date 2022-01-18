@@ -1,0 +1,21 @@
+{% extends "layout/basic.html" %}
+
+{% block content %}
+<h2>ТАРИФЫ</h2>
+<a href="{% url 'add_tariff' %}">Добавить</a>
+{% for bb in tariffs %}
+<div class="b">
+    <p>
+        <span>Тариф от {{ bb.date_start|date:"d.m.Y" }}</span>&nbsp;
+        <span>Водоснабжение: {{ bb.water_supply }}</span>&nbsp;
+        <span>Водоотведение: {{ bb.water_drainage }}</span>&nbsp;
+        <span>Подогрев воды: {{ bb.heating_water }}</span>&nbsp;
+        <span>Электричество: день: {{ bb.el_day }}</span>&nbsp;
+        <span>Электричество: ночь: {{ bb.el_night }}</span>
+        &nbsp;&nbsp;
+        <a href="{% url 'edit_tariff' pk=bb.pk %}">Редактировать</a>
+    </p>
+    <p>---------------------------------------------------</p>
+</div>
+{% endfor %}
+{% endblock %}

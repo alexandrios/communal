@@ -1,0 +1,4 @@
+# Default ignored files
+/.idea
+/communal/__pycache__/
+/prospect/__pycache__/
