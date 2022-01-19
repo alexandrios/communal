@@ -16,7 +16,9 @@ class Counters(models.Model):
     class Meta:
         verbose_name_plural = 'Показания счётчиков'
         verbose_name = 'Показания счётчиков'
-        ordering = ['-date_get']
+        unique_together = ('month', 'year')
+        ordering = ['-year', '-month']
+        get_latest_by = ['-year', '-month']
 
 
 class Tariffs(models.Model):
@@ -30,4 +32,5 @@ class Tariffs(models.Model):
     class Meta:
         verbose_name_plural = 'Тарифы'
         verbose_name = 'Тарифы'
+        unique_together = ('date_start', )
         ordering = ['-date_start']

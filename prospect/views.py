@@ -3,6 +3,7 @@ from django.views.generic.edit import CreateView
 from django.urls import reverse_lazy
 from prospect.models import Counters, Tariffs
 from .forms import CountersForm, TariffsForm
+from datetime import date
 
 
 def index(request):
@@ -26,7 +27,7 @@ def tariffs(request):
 class CounterCreateView(CreateView):
     template_name = 'prospect/add_counter.html'
     form_class = CountersForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('counters')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,7 +54,7 @@ def edit_counter(request, pk):
 class TariffCreateView(CreateView):
     template_name = 'prospect/add_tariff.html'
     form_class = TariffsForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('tariffs')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,18 +79,36 @@ def edit_tariff(request, pk):
 
 
 def do_counter(request, pk):
-    counter = get_object_or_404(Counters, pk=pk)
-    prev_counter = get_object_or_404(Counters, pk=pk - 1)
-    tariff = Tariffs.objects.last()
+    # Взять показания счётчиков на момент расчёта
+    # counter = get_object_or_404(Counters, pk=pk)
+    counter = Counters.objects.get(pk=pk)
+
+    # Взять предыдущие показания счётчиков
+    prev_counter = Counters.objects.filter(id__lt=pk).first()
+    if prev_counter is None:
+        context = {'period': f"с ... по {format(counter.date_get, '%d.%m.%Y')}",
+                   'result': [], 'itog': "Не найдены показания счётчиков за предыдущий период!"}
+        return render(request, 'prospect/do_counter.html', context)
+
+    # Найти тариф, соответствующий месяцу расчёта
+    date_start = date(counter.year, counter.month, 1)
+    for tt in Tariffs.objects.all():
+        if date_start >= tt.date_start:
+            tariff = tt
+            break
+    else:
+        context = {'period': f"с {format(prev_counter.date_get, '%d.%m.%Y')} по {format(counter.date_get, '%d.%m.%Y')}",
+                   'result': [], 'itog': "Не найден тариф, соответствующий месяцу расчёта!"}
+        return render(request, 'prospect/do_counter.html', context)
 
     res = algo(counter, prev_counter, tariff)
 
-    context = {'result': res}
+    context = {'period': res[0], 'result': res[1:-1], 'itog': res[-1]}
     return render(request, 'prospect/do_counter.html', context)
 
 
 def algo(counter, prev_counter, tariff):
-    res = []
+    res = [f"с {format(prev_counter.date_get, '%d.%m.%Y')} по {format(counter.date_get, '%d.%m.%Y')}"]
     res.append("ЭЛЕКТРОЭНЕРГИЯ")
     res.append(f"Расход день: {counter.el_1 - prev_counter.el_1}")
     res.append(f"Тариф день: {tariff.el_day}")
@@ -105,7 +124,8 @@ def algo(counter, prev_counter, tariff):
     res.append(f"Итого сумма по э/э: {sum_e}")
 
     res.append("НАГРЕВ ВОДЫ")
-    res.append(f"Расход: {counter.hw_kitchen - prev_counter.hw_kitchen + counter.hw_bathroom - prev_counter.hw_bathroom}")
+    res.append(
+        f"Расход: {counter.hw_kitchen - prev_counter.hw_kitchen + counter.hw_bathroom - prev_counter.hw_bathroom}")
     res.append(f"Тариф: {tariff.heating_water}")
     rashod = counter.hw_kitchen - prev_counter.hw_kitchen + counter.hw_bathroom - prev_counter.hw_bathroom
     sum_hw = rashod * tariff.heating_water

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from django import forms
 from django.conf import settings
 from django.forms import DateInput, modelform_factory, SelectDateWidget
@@ -27,14 +27,17 @@ class CountersForm(forms.ModelForm):
 class TariffsForm(forms.ModelForm):
     date_start = forms.DateField(label='Начало действия тарифа',
                                  widget=DateInput(attrs={'type': 'date'}),
-                                 initial=datetime.today(), localize=True)
-    water_supply = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0, initial=0.01,
+                                 initial=date(datetime.today().year, datetime.today().month, 1), localize=True)
+    water_supply = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0, initial=0.00,
                                       label='Водоснабжение')
-    water_drainage = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0, initial=0.01,
+    water_drainage = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0, initial=0.00,
                                         label='Водоотведение')
-    heating_water = forms.DecimalField(decimal_places=2, label='Подогрев воды')
-    el_day = forms.DecimalField(decimal_places=2, label='Электричество: день')
-    el_night = forms.DecimalField(decimal_places=2, label='Электричество: ночь')
+    heating_water = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0, initial=0.00,
+                                       label='Подогрев воды')
+    el_day = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0, initial=0.00,
+                                label='Электричество: день')
+    el_night = forms.DecimalField(max_digits=5, decimal_places=2, min_value=0, initial=0.00,
+                                  label='Электричество: ночь')
 
     class Meta:
         model = Tariffs

@@ -1,10 +1,11 @@
 {% extends "layout/basic.html" %}
 
 {% block content %}
-<h2>РАСЧЁТ</h2>
+<h2>РАСЧЁТ {{ period }}</h2>
 {% for bb in result %}
 <div class="b">
     <p>{{ bb }}</p>
 </div>
 {% endfor %}
+<h2>{{ itog }}</h2>
 {% endblock %}
