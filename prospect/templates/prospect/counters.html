@@ -17,6 +17,8 @@
         &nbsp;&nbsp;
         <a href="{% url 'edit_counter' pk=bb.pk %}">Редактировать</a>
         &nbsp;&nbsp;
+        <a href="{% url 'del_counter' pk=bb.pk %}" onclick="return confirm('Are you sure?');">Удалить</a>
+        &nbsp;&nbsp;
         <a href="{% url 'do_counter' pk=bb.pk %}">Рассчитать</a>
     </p>
     <p>{{ bb.notes }}</p>

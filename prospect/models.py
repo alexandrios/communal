@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Counters(models.Model):
+    date_get = models.DateField(verbose_name='Дата снятия показаний')
     month = models.IntegerField(verbose_name='Месяц')
     year = models.IntegerField(verbose_name='Год')
     cw_kitchen = models.IntegerField(verbose_name='Холодная вода: Кухня')
@@ -10,7 +11,6 @@ class Counters(models.Model):
     hw_bathroom = models.IntegerField(verbose_name='Горячая вода: Ванная')
     el_1 = models.IntegerField(verbose_name='Электричество: Тариф 1 (день)')
     el_2 = models.IntegerField(verbose_name='Электричество: Тариф 2 (ночь)')
-    date_get = models.DateField(verbose_name='Дата снятия показаний')
     notes = models.TextField(verbose_name='Примечание', null=True, blank=True)
 
     class Meta:

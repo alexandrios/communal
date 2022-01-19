@@ -1,0 +1,23 @@
+{% extends "layout/basic.html" %}
+
+{% block title %}Удаление тарифов{% endblock %}
+
+{% block content %}
+<h2><span class="red">Удалить тарифы</span></h2>
+<form method="post">
+    {% csrf_token %}
+    {% for field in form.visible_fields %}
+        {% if field.errors %}
+        <ul>
+            {% for error in field.errors %}
+            <li><em>{{ error|escape }}</em></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <p>{{ field.label_tag }}<br>{{ field }}<br>
+        {{ field.help_text }}</p>
+    {% endfor %}
+    <!--input type="submit" value="Удалить"-->
+    <button onclick="return confirm('Are you sure?');">Delete</button>
+</form>
+{% endblock %}

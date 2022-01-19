@@ -1,27 +1,35 @@
 from datetime import datetime, date
 from django import forms
 from django.conf import settings
+from django.core import validators
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms import DateInput, modelform_factory, SelectDateWidget
 from .models import Counters, Tariffs
 
 
 class CountersForm(forms.ModelForm):
     # input_formats=settings.DATE_INPUT_FORMATS
+    month = forms.IntegerField(label='Месяц', initial=date.today().month,
+                               max_value=12, min_value=1,
+                               validators=[MaxValueValidator(12), MinValueValidator(1)])
+    year = forms.IntegerField(label='Год', initial=date.today().year,
+                              max_value=2100, min_value=2000,
+                              validators=[MaxValueValidator(2100), MinValueValidator(2000)])
     date_get = forms.DateField(label='Дата снятия показаний',
                                widget=DateInput(attrs={'type': 'date'}),
                                initial=datetime.today(), localize=True)
     notes = forms.CharField(label='Примечание', required=False,
                             widget=forms.widgets.Textarea(attrs={'rows': 3}))
-    cw_kitchen = forms.IntegerField(label='Холодная вода: Кухня (234)')
+    cw_kitchen = forms.IntegerField(label='Холодная вода: Кухня ()', initial=0)
+    #cw_bathroom = forms.IntegerField(initial=0)
 
     # date_get = forms.DateField(label='Дата снятия показаний',
     #                            widget=SelectDateWidget(empty_label=('Год', "Месяц", "Число")), localize=True)
 
     class Meta:
         model = Counters
-        fields = ('date_get', 'month', 'year',
-                  'cw_kitchen', 'cw_bathroom', 'hw_kitchen', 'hw_bathroom',
-                  'el_1', 'el_2', 'notes')
+        fields = '__all__'
+        # labels = {'cw_bathroom': 'Холодная вода: Серебряный'}
 
 
 class TariffsForm(forms.ModelForm):

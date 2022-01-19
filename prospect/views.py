@@ -51,6 +51,12 @@ def edit_counter(request, pk):
         return render(request, 'prospect/edit_counter.html', context)
 
 
+def del_counter(request, pk):
+    bb = get_object_or_404(Counters, pk=pk)
+    bb.delete()
+    return counters(request)
+
+
 class TariffCreateView(CreateView):
     template_name = 'prospect/add_tariff.html'
     form_class = TariffsForm
@@ -76,6 +82,23 @@ def edit_tariff(request, pk):
         bbf = TariffsForm(instance=bb)
         context = {'form': bbf}
         return render(request, 'prospect/edit_tariff.html', context)
+
+
+def del_tariff(request, pk):
+    bb = get_object_or_404(Tariffs, pk=pk)
+    if request.method == 'POST':
+        bbf = TariffsForm(request.POST, instance=bb)
+        # if bbf.is_valid():
+            # if bbf.has_changed():
+        bb.delete()
+        return tariffs(request)
+        #else:
+        #    context = {'form': bbf}
+        #    return render(request, 'prospect/del_tariff.html', context)
+    else:
+        bbf = TariffsForm(instance=bb)
+        context = {'form': bbf}
+        return render(request, 'prospect/del_tariff.html', context)
 
 
 def do_counter(request, pk):
