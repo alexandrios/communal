@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'prospect',
     'prospect.apps.ProspectConfig',
 ]
 
@@ -123,3 +124,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DATE_INPUT_FORMATS = ['%d.%m.%Y']
+
+LOGIN_URL = "/accounts/login"
+
+LOGIN_REDIRECT_URL = "/prospect"
+
+LOGOUT_REDIRECT_URL = "/prospect"

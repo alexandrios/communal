@@ -2,8 +2,9 @@ from datetime import datetime, date
 from django import forms
 from django.conf import settings
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.forms import DateInput, modelform_factory, SelectDateWidget
+from django.forms import DateInput, modelform_factory, SelectDateWidget, NumberInput
 from .models import Counters, Tariffs
 
 
@@ -20,7 +21,7 @@ class CountersForm(forms.ModelForm):
                                initial=datetime.today(), localize=True)
     notes = forms.CharField(label='Примечание', required=False,
                             widget=forms.widgets.Textarea(attrs={'rows': 3}))
-    cw_kitchen = forms.IntegerField(label='Холодная вода: Кухня ()', initial=0)
+    cw_kitchen = forms.IntegerField(label='Холодная вода: Кухня', initial=0)
     #cw_bathroom = forms.IntegerField(initial=0)
 
     # date_get = forms.DateField(label='Дата снятия показаний',
@@ -50,3 +51,17 @@ class TariffsForm(forms.ModelForm):
     class Meta:
         model = Tariffs
         fields = ('date_start', 'water_supply', 'water_drainage', 'heating_water', 'el_day', 'el_night')
+
+    def clean_water_supply(self):
+        val = self.cleaned_data['water_supply']
+        if val > 100:
+            raise ValidationError('Слишком высокий тариф для водоснабжения!')
+        return val
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.cleaned_data['water_drainage'] > 100:
+            errors['water_drainage'] = ValidationError('Слишком высокий тариф для водоотведения!')
+        if errors:
+            raise ValidationError(errors)

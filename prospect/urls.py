@@ -4,9 +4,9 @@ from .views import index, CounterCreateView, TariffCreateView, \
     del_counter, do_counter
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', index, {'mode': 'DEBUG'}, name='index'),
     path('counters/', counters, name='counters'),
-    path('add_counter/', CounterCreateView.as_view(), name='add_counter'),
+    path('add_counter/', CounterCreateView.as_view(template_name='prospect/add_counter.html'), name='add_counter'),
     path('edit_counter/<int:pk>/', edit_counter, name='edit_counter'),
     path('del_counter/<int:pk>/', del_counter, name='del_counter'),
     path('tariffs/', tariffs, name='tariffs'),

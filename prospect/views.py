@@ -1,40 +1,49 @@
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.views import redirect_to_login
+from django.http import HttpResponseForbidden
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from prospect.models import Counters, Tariffs
 from .forms import CountersForm, TariffsForm
 from datetime import date
 
 
-def index(request):
-    # counters = Counters.objects.all()
-    # context = {'counters': counters}
-    return render(request, 'prospect/index.html', None)
+def index(request, mode=None):
+    return render(request, 'prospect/index.html', {'mode': mode})
 
 
+@login_required()
+@permission_required('prospect.delete_counters', raise_exception=True)
 def counters(request):
-    objs = Counters.objects.all()
-    context = {'counters': objs}
+    context = {'counters': Counters.objects.all()}
     return render(request, 'prospect/counters.html', context)
 
 
 def tariffs(request):
-    objs = Tariffs.objects.all()
-    context = {'tariffs': objs}
+    context = {'tariffs': Tariffs.objects.all()}
     return render(request, 'prospect/tariffs.html', context)
 
 
 class CounterCreateView(CreateView):
-    template_name = 'prospect/add_counter.html'
+    # template_name = 'prospect/add_counter.html'
     form_class = CountersForm
     success_url = reverse_lazy('counters')
 
     def get_context_data(self, **kwargs):
+        # print('1111', kwargs)
         context = super().get_context_data(**kwargs)
+        # Передать в швблон последние показания
+        context['cc'] = Counters.objects.first()
         return context
 
 
 def edit_counter(request, pk):
+    if not request.user.is_authenticated:
+        # raise Exception('Вы не можете редактировать показания!')
+        # return HttpResponseForbidden('Вы не можете редактировать показания!')
+        return redirect('login')
+        # return redirect_to_login(reverse_lazy("edit_counter/", pk))
     bb = get_object_or_404(Counters, pk=pk)
     if request.method == 'POST':
         bbf = CountersForm(request.POST, instance=bb)
@@ -49,8 +58,11 @@ def edit_counter(request, pk):
         bbf = CountersForm(instance=bb)
         context = {'form': bbf}
         return render(request, 'prospect/edit_counter.html', context)
+# else:
+# return HttpResponseForbidden('Вы не можете редактировать показания!')
 
 
+@login_required
 def del_counter(request, pk):
     bb = get_object_or_404(Counters, pk=pk)
     bb.delete()
@@ -84,15 +96,16 @@ def edit_tariff(request, pk):
         return render(request, 'prospect/edit_tariff.html', context)
 
 
+@login_required
 def del_tariff(request, pk):
     bb = get_object_or_404(Tariffs, pk=pk)
     if request.method == 'POST':
         bbf = TariffsForm(request.POST, instance=bb)
         # if bbf.is_valid():
-            # if bbf.has_changed():
+        # if bbf.has_changed():
         bb.delete()
         return tariffs(request)
-        #else:
+        # else:
         #    context = {'form': bbf}
         #    return render(request, 'prospect/del_tariff.html', context)
     else:
