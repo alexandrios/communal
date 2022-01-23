@@ -2,7 +2,9 @@
 
 {% block content %}
 <h2>ПОКАЗАНИЯ СЧЁТЧИКОВ</h2>
+{% if perms.prospect.add_counters %}
 <a href="{% url 'add_counter' %}">Добавить</a>
+{% endif %}
 {% for bb in counters %}
 <div class="b">
     <p>
@@ -14,10 +16,14 @@
         <span>Г.В.Ванная: {{ bb.hw_bathroom }}</span>&nbsp;
         <span>Э/Э День: {{ bb.el_1 }}</span>&nbsp;
         <span>Э/Э Ночь: {{ bb.el_2 }}</span>
+        {% if perms.prospect.change_counters %}
         &nbsp;&nbsp;
         <a href="{% url 'edit_counter' pk=bb.pk %}">Редактировать</a>
+        {% endif %}
+        {% if perms.prospect.delete_counters %}
         &nbsp;&nbsp;
         <a href="{% url 'del_counter' pk=bb.pk %}" onclick="return confirm('Are you sure?');">Удалить</a>
+        {% endif %}
         &nbsp;&nbsp;
         <a href="{% url 'do_counter' pk=bb.pk %}">Рассчитать</a>
     </p>

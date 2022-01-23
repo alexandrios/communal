@@ -2,7 +2,9 @@
 
 {% block content %}
 <h2>ТАРИФЫ</h2>
+{% if 'prospect.add_tariffs' in perms %}
 <a href="{% url 'add_tariff' %}">Добавить</a>
+{% endif %}
 {% for bb in tariffs %}
 <div class="b">
     <p>
@@ -12,10 +14,14 @@
         <span>Подогрев воды: {{ bb.heating_water }}</span>&nbsp;
         <span>Электричество: день: {{ bb.el_day }}</span>&nbsp;
         <span>Электричество: ночь: {{ bb.el_night }}</span>
+        {% if 'prospect.change_tariffs' in perms %}
         &nbsp;&nbsp;
         <a href="{% url 'edit_tariff' pk=bb.pk %}">Редактировать</a>
+        {% endif %}
+        {% if 'prospect.delete_tariffs' in perms %}
         &nbsp;
         <a href="{% url 'del_tariff' pk=bb.pk %}">Удалить</a>
+        {% endif %}
     </p>
     <p>---------------------------------------------------</p>
 </div>

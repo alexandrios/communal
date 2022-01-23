@@ -6,14 +6,14 @@
 <h2>Добавление показаний</h2>
 <p>
     <span>Предыдущие показания:</span>
-    <span>[{{ cc.month }}.{{ cc.year }}]</span>&nbsp;
-    <span>{{ cc.date_get|date:"d.m.Y" }}</span>&nbsp;
-    <span>Х.В.Кухня: {{ cc.cw_kitchen }}</span>&nbsp;
-    <span>Х.В.Ванная: {{ cc.cw_bathroom }}</span>&nbsp;
-    <span>Г.В.Кухня: {{ cc.hw_kitchen }}</span>&nbsp;
-    <span>Г.В.Ванная: {{ cc.hw_bathroom }}</span>&nbsp;
-    <span>Э/Э День: {{ cc.el_1 }}</span>&nbsp;
-    <span>Э/Э Ночь: {{ cc.el_2 }}</span>
+    <span>[{{ prev_counter.month }}.{{ prev_counter.year }}]</span>&nbsp;
+    <span>{{ prev_counter.date_get|date:"d.m.Y" }}</span>&nbsp;
+    <span>Х.В.Кухня: {{ prev_counter.cw_kitchen }}</span>&nbsp;
+    <span>Х.В.Ванная: {{ prev_counter.cw_bathroom }}</span>&nbsp;
+    <span>Г.В.Кухня: {{ prev_counter.hw_kitchen }}</span>&nbsp;
+    <span>Г.В.Ванная: {{ prev_counter.hw_bathroom }}</span>&nbsp;
+    <span>Э/Э День: {{ prev_counter.el_1 }}</span>&nbsp;
+    <span>Э/Э Ночь: {{ prev_counter.el_2 }}</span>
 </p>
 <form method="post">
     {% csrf_token %}

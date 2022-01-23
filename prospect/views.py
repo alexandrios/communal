@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
@@ -14,36 +15,40 @@ def index(request, mode=None):
 
 
 @login_required()
-@permission_required('prospect.delete_counters', raise_exception=True)
+@permission_required('prospect.view_counters', raise_exception=True)
 def counters(request):
     context = {'counters': Counters.objects.all()}
     return render(request, 'prospect/counters.html', context)
 
 
+@login_required()
+@permission_required('prospect.view_tariffs', raise_exception=True)
 def tariffs(request):
     context = {'tariffs': Tariffs.objects.all()}
     return render(request, 'prospect/tariffs.html', context)
 
 
-class CounterCreateView(CreateView):
-    # template_name = 'prospect/add_counter.html'
+class CounterCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'prospect.add_counters'
+    # template_name = 'prospect/add_counter.html' - указано в urls.py в аргументе as_view()
     form_class = CountersForm
     success_url = reverse_lazy('counters')
 
     def get_context_data(self, **kwargs):
-        # print('1111', kwargs)
         context = super().get_context_data(**kwargs)
-        # Передать в швблон последние показания
-        context['cc'] = Counters.objects.first()
+        # Передать в шаблон предыдущие показания
+        context['prev_counter'] = Counters.objects.first()
         return context
 
 
+@login_required()
+@permission_required('prospect.change_counters', raise_exception=True)
 def edit_counter(request, pk):
-    if not request.user.is_authenticated:
+    # if not request.user.is_authenticated:
         # raise Exception('Вы не можете редактировать показания!')
         # return HttpResponseForbidden('Вы не можете редактировать показания!')
-        return redirect('login')
-        # return redirect_to_login(reverse_lazy("edit_counter/", pk))
+        # return redirect('login')
+    #    return redirect_to_login(reverse("edit_counter", kwargs={'pk': pk}))
     bb = get_object_or_404(Counters, pk=pk)
     if request.method == 'POST':
         bbf = CountersForm(request.POST, instance=bb)
@@ -63,13 +68,15 @@ def edit_counter(request, pk):
 
 
 @login_required
+@permission_required('prospect.delete_counters', raise_exception=True)
 def del_counter(request, pk):
     bb = get_object_or_404(Counters, pk=pk)
     bb.delete()
     return counters(request)
 
 
-class TariffCreateView(CreateView):
+class TariffCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = 'prospect.add_tariffs'
     template_name = 'prospect/add_tariff.html'
     form_class = TariffsForm
     success_url = reverse_lazy('tariffs')
@@ -79,6 +86,8 @@ class TariffCreateView(CreateView):
         return context
 
 
+@login_required()
+@permission_required('prospect.change_tariffs', raise_exception=True)
 def edit_tariff(request, pk):
     bb = get_object_or_404(Tariffs, pk=pk)
     if request.method == 'POST':
@@ -96,6 +105,8 @@ def edit_tariff(request, pk):
         return render(request, 'prospect/edit_tariff.html', context)
 
 
+@login_required()
+@permission_required('prospect.delete_tariffs', raise_exception=True)
 @login_required
 def del_tariff(request, pk):
     bb = get_object_or_404(Tariffs, pk=pk)
