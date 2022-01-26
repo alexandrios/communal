@@ -1,8 +1,11 @@
+header {
+    background: url("bg.jpg") left / auto 100% no-repeat;
+}
 header h1 {
     font-size: 32pt;
     text-transform : uppercase;
     text-align: left;
-    background: url("bg.jpg") left / auto 100% no-repeat;
+    margin-left: 50pt;
     }
 nav {
     font-size: 16pt;

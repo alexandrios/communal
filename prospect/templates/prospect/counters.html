@@ -1,5 +1,8 @@
 {% extends "layout/basic.html" %}
 
+{% load thumbnail %}
+{% load static %}
+
 {% block content %}
 <h2>ПОКАЗАНИЯ СЧЁТЧИКОВ</h2>
 {% if perms.prospect.add_counters %}
@@ -28,6 +31,38 @@
         <a href="{% url 'do_counter' pk=bb.pk %}">Рассчитать</a>
     </p>
     <p>{{ bb.notes }}</p>
+    <p>
+    {% if bb.cw_kitchen_img %}
+        <a href="{{ bb.cw_kitchen_img.url }}"><img class="mr-3" src="{% thumbnail bb.cw_kitchen_img 'default' %}"></a>
+    {% else %}
+        <img class="mr-3" src="{% static 'prospect/empty.jpg' %}">
+    {% endif %}
+    {% if bb.cw_bathroom_img %}
+        <a href="{{ bb.cw_bathroom_img.url }}"><img class="mr-3" src="{% thumbnail bb.cw_bathroom_img 'default' %}"></a>
+    {% else %}
+        <img class="mr-3" src="{% static 'prospect/empty.jpg' %}">
+    {% endif %}
+    {% if bb.hw_kitchen_img %}
+        <a href="{{ bb.hw_kitchen_img.url }}"><img class="mr-3" src="{% thumbnail bb.hw_kitchen_img 'default' %}" ></a>
+    {% else %}
+        <img class="mr-3" src="{% static 'prospect/empty.jpg' %}" alt="Горячая вода. Кухня">
+    {% endif %}
+    {% if bb.hw_bathroom_img %}
+        <a href="{{ bb.hw_bathroom_img.url }}"><img class="mr-3" src="{% thumbnail bb.hw_bathroom_img 'default' %}"></a>
+    {% else %}
+        <img class="mr-3" src="{% static 'prospect/empty.jpg' %}">
+    {% endif %}
+    {% if bb.el_1_img %}
+        <a href="{{ bb.el_1_img.url }}"><img class="mr-3" src="{% thumbnail bb.el_1_img 'default' %}"></a>
+    {% else %}
+        <img class="mr-3" src="{% static 'prospect/empty.jpg' %}">
+    {% endif %}
+    {% if bb.el_2_img %}
+        <a href="{{ bb.el_2_img.url }}"><img class="mr-3" src="{% thumbnail bb.el_2_img 'default' %}"></a>
+    {% else %}
+        <img class="mr-3" src="{% static 'prospect/empty.jpg' %}">
+    {% endif %}
+    </p>
     <p>---------------------------------------------------</p>
 </div>
 {% endfor %}

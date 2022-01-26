@@ -1,4 +1,5 @@
 from django.db import models
+from .utils import get_timestamp_path
 
 
 class Counters(models.Model):
@@ -6,11 +7,17 @@ class Counters(models.Model):
     month = models.IntegerField(verbose_name='Месяц')
     year = models.IntegerField(verbose_name='Год')
     cw_kitchen = models.IntegerField(verbose_name='Холодная вода: Кухня')
+    cw_kitchen_img = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path)
     cw_bathroom = models.IntegerField(verbose_name='Холодная вода: Ванная')
+    cw_bathroom_img = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path)
     hw_kitchen = models.IntegerField(verbose_name='Горячая вода: Кухня')
+    hw_kitchen_img = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path)
     hw_bathroom = models.IntegerField(verbose_name='Горячая вода: Ванная')
+    hw_bathroom_img = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path)
     el_1 = models.IntegerField(verbose_name='Электричество: Тариф 1 (день)')
+    el_1_img = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path)
     el_2 = models.IntegerField(verbose_name='Электричество: Тариф 2 (ночь)')
+    el_2_img = models.ImageField(verbose_name='Фото', blank=True, upload_to=get_timestamp_path)
     notes = models.TextField(verbose_name='Примечание', null=True, blank=True)
 
     class Meta:

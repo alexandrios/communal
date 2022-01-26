@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
@@ -28,6 +29,21 @@ def tariffs(request):
     return render(request, 'prospect/tariffs.html', context)
 
 
+@login_required()
+@permission_required('prospect.add_counters', raise_exception=True)
+def add_counter(request):
+    if request.method == 'POST':
+        form = CountersForm(request.POST, request.FILES)
+        if form.is_valid():
+            cc = form.save()
+            messages.add_message(request, messages.SUCCESS, 'Объявление добавлено')
+            return redirect('counters')
+    else:
+        form = CountersForm()
+    context = {'form': form, 'prev_counter': Counters.objects.first()}
+    return render(request, 'prospect/add_counter.html', context)
+
+
 class CounterCreateView(PermissionRequiredMixin, CreateView):
     permission_required = 'prospect.add_counters'
     # template_name = 'prospect/add_counter.html' - указано в urls.py в аргументе as_view()
@@ -51,7 +67,7 @@ def edit_counter(request, pk):
     #    return redirect_to_login(reverse("edit_counter", kwargs={'pk': pk}))
     bb = get_object_or_404(Counters, pk=pk)
     if request.method == 'POST':
-        bbf = CountersForm(request.POST, instance=bb)
+        bbf = CountersForm(request.POST, request.FILES, instance=bb)
         if bbf.is_valid():
             if bbf.has_changed():
                 bbf.save()

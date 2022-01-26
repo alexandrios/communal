@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'prospect',
     'prospect.apps.ProspectConfig',
+    'django_cleanup',
+    'easy_thumbnails',
 ]
 
 MIDDLEWARE = [
@@ -126,7 +128,18 @@ STATIC_URL = '/static/'
 DATE_INPUT_FORMATS = ['%d.%m.%Y']
 
 LOGIN_URL = "/accounts/login"
-
 LOGIN_REDIRECT_URL = "/prospect"
-
 LOGOUT_REDIRECT_URL = "/prospect"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'default': {
+            'size': (96, 96),
+            'crop': True,
+        },
+    },
+}
+THUMBNAIL_BASEDIR = 'thumbnails'

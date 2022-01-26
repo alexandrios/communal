@@ -4,7 +4,7 @@
 
 {% block content %}
 <h2>Редактировать показания</h2>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% for field in form.visible_fields %}
     {% if field.errors %}

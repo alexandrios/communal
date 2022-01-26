@@ -13,9 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path, include
+from django.views.decorators.cache import never_cache
+from django.views.static import serve
+
+from communal import settings
 
 urlpatterns = [
     path('prospect/', include('prospect.urls')),
@@ -23,3 +28,9 @@ urlpatterns = [
     path('accounts/login/', LoginView.as_view(), name='login'),
     path('accounts/logout/', LogoutView.as_view(), name='logout'),
 ]
+
+if settings.DEBUG:
+    urlpatterns.append(path('static/<path:path>',
+                            never_cache(serve)))
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
