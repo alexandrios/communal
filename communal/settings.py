@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # 'prospect',
     'prospect.apps.ProspectConfig',
-    'django_cleanup',
     'easy_thumbnails',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
