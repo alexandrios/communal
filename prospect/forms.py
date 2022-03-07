@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms import DateInput, modelform_factory, SelectDateWidget, NumberInput
 from .models import Counters, Tariffs
+from .utils import MyClearableFileInput
 
 
 class CountersForm(forms.ModelForm):
@@ -19,6 +20,11 @@ class CountersForm(forms.ModelForm):
                                widget=DateInput(attrs={'type': 'date'}),
                                initial=datetime.today(), localize=True)
     cw_kitchen = forms.IntegerField(label='Холодная вода: Кухня', initial=0)
+    cw_kitchen_img = forms.ImageField(label='Фото', required=False,
+                                      validators=[validators.FileExtensionValidator(
+                                        allowed_extensions=('gif', 'jpg', 'png'))],
+                                      error_messages={'invalid_extension': 'Этот формат не поддерживается!'},
+                                      widget=MyClearableFileInput)
     cw_bathroom = forms.IntegerField(label='Холодная вода: Ванная', initial=0)
     hw_kitchen = forms.IntegerField(label='Горячая вода: Кухня', initial=0)
     hw_bathroom = forms.IntegerField(label='Горячая вода: Ванная', initial=0)

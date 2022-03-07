@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import redirect_to_login
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic.edit import CreateView
@@ -36,7 +37,8 @@ def add_counter(request):
         form = CountersForm(request.POST, request.FILES)
         if form.is_valid():
             cc = form.save()
-            messages.add_message(request, messages.SUCCESS, 'Объявление добавлено')
+            # messages.add_message(request, messages.SUCCESS, 'Объявление добавлено')
+            # success_message = 'Показания добавлены'
             return redirect('counters')
     else:
         form = CountersForm()
@@ -91,11 +93,12 @@ def del_counter(request, pk):
     return counters(request)
 
 
-class TariffCreateView(PermissionRequiredMixin, CreateView):
+class TariffCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     permission_required = 'prospect.add_tariffs'
     template_name = 'prospect/add_tariff.html'
     form_class = TariffsForm
     success_url = reverse_lazy('tariffs')
+    success_message = 'Тариф добавлен'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
